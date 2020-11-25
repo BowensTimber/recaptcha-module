@@ -1,6 +1,6 @@
 {
-  "name": "@nuxtjs/recaptcha",
-  "version": "0.6.2",
+  "name": "@bowenstimber/recaptcha",
+  "version": "0.7.0",
   "description": "Simple and easy Google reCAPTCHA integration with Nuxt.js",
   "keywords": [
     "nuxtjs",
@@ -17,8 +17,8 @@
   ],
   "main": "lib/module.js",
   "types": "types/index.d.ts",
-  "bugs": "https://github.com/nuxt-community/recaptcha-module/issues",
-  "repository": "https://github.com/nuxt-community/recaptcha-module",
+  "bugs": "https://github.com/bowenstimber/recaptcha-module/issues",
+  "repository": "https://github.com/bowenstimber/recaptcha-module",
   "publishConfig": {
     "access": "public"
   },
@@ -26,8 +26,7 @@
     "dev:v3": "nuxt example/v3",
     "dev:v2": "nuxt example/v2",
     "lint": "eslint lib test",
-    "test": "yarn lint && jest",
-    "release": "standard-version && git push --follow-tags && npm publish"
+    "test": "yarn lint && jest"
   },
   "files": [
     "lib",

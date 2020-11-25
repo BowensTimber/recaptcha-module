@@ -1,0 +1,74 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+
+    steps:
+      - name: Begin CI...
+        uses: actions/checkout@v2
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Use cached node_modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: nodeModules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            nodeModules-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build
+        run: yarn codecov
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: build
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/v3'
+
+    steps:
+      - name: Begin Deployment
+        uses: actions/checkout@v2
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          registry-url: "https://npm.pkg.github.com"
+          node-version: 14.x
+
+      - name: Use cached node_modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: nodeModules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            nodeModules-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        env:
+          CI: true
+
+      - name: Build
+        run: yarn build
+        env:
+          CI: true
+
+      - name: Publish
+        uses: luvies/action-yarn-publish@v0.1.1
+        with:
+          git-tag: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
